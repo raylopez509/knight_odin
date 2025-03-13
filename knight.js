@@ -43,11 +43,47 @@ function createNodes() {
 
 createNodes();
 
-console.log(gameBoard[0]);
+console.log(gameBoard[0][0].coordinates);
+printAdjacentMoves(gameBoard[0][0]);
+console.log(gameBoard[1][2].coordinates);
+printAdjacentMoves(gameBoard[1][2]);
+console.log(gameBoard[2][1].coordinates);
+printAdjacentMoves(gameBoard[2][1]);
 
+function printAdjacentMoves(node) {
+  let str = "[";
+  for(let i = 0; i < node.adjacentMoves.length; i++) {
+    str = str + `[${node.adjacentMoves[i]}]`;
+    if(i != node.adjacentMoves.length - 1) {
+      str = str + ", "
+    }
+    else {
+      str = str + "]"
+    }
+  }
+  console.log(str);
+}
 
-let test = new Array(8);
-
-test[0] = 5;
-
-console.log(test[0])
+function knightMoves(start, end) {
+  if(start == null) {
+    return;
+  }
+  let currentpath = []
+  let queue = [];
+  queue.push(start);
+  let ifFound = false;
+  while(!ifFound) {
+    let currentNode = queue.shift();
+    currentPath.push(currentNode);
+    for(let node of currentNode.adjacentMoves)
+      if(node.coordinates[0] != end.coordinates[0] ||
+        node.coordinates[1] != end.coordinates[1]
+      ) {
+        queue.push(node);
+      }
+      else {
+        ifFound = true;
+        currentPath.push(node);
+      }
+  }
+}
