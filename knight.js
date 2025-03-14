@@ -2,6 +2,7 @@ class Node {
   constructor(coordinates = [0, 0]) {
     this.coordinates = coordinates;
     this.adjacentMoves = [];
+    this.path = [];
   }
 }
 
@@ -43,12 +44,7 @@ function createNodes() {
 
 createNodes();
 
-console.log(gameBoard[0][0].coordinates);
-printAdjacentMoves(gameBoard[0][0]);
-console.log(gameBoard[1][2].coordinates);
-printAdjacentMoves(gameBoard[1][2]);
-console.log(gameBoard[2][1].coordinates);
-printAdjacentMoves(gameBoard[2][1]);
+//  
 
 function printAdjacentMoves(node) {
   let str = "[";
@@ -64,26 +60,65 @@ function printAdjacentMoves(node) {
   console.log(str);
 }
 
-function knightMoves(start, end) {
-  if(start == null) {
-    return;
+function doesArrayContainNode(array, node) {
+  let x = node.coordinates[0];
+  let y = node.coordinates[1];
+  for(arrayNode of array) {
+    if(arrayNode.coordinates[0] === x && arrayNode.coordinates[1] === y) {
+      return true;
+    }
   }
-  let currentpath = []
+  return false;
+}
+
+function knightMoves(start, end) {
+  startNode = gameBoard[start[0]][start[1]];
+  let currentPath = []
+  startNode.path = [startNode];
   let queue = [];
-  queue.push(start);
+  queue.push(startNode);
   let ifFound = false;
   while(!ifFound) {
     let currentNode = queue.shift();
-    currentPath.push(currentNode);
-    for(let node of currentNode.adjacentMoves)
-      if(node.coordinates[0] != end.coordinates[0] ||
-        node.coordinates[1] != end.coordinates[1]
+    currentPath = currentNode.path;
+    // currentPath.push(currentNode);
+    for(let nodeCoordinates of currentNode.adjacentMoves) {
+      let node = gameBoard[nodeCoordinates[0]][nodeCoordinates[1]];
+      for(let pathNode of currentPath) {
+        node.path.push(pathNode);
+      }
+      node.path.push(node);
+      if(node.coordinates[0] != end[0] ||
+        node.coordinates[1] != end[1]
       ) {
-        queue.push(node);
+        if(!doesArrayContainNode(currentPath, node)) {
+          queue.push(node);
+        }
       }
       else {
         ifFound = true;
-        currentPath.push(node);
+        currentPath = node.path;
       }
+    }
   }
+  return currentPath;
 }
+
+function printMoves(array) {
+  let str = '[';
+  let i = 0;
+  for(let node of array) {
+    str = str + `[${node.coordinates}]`;
+    if(i != array.length - 1) {
+      str = str + ","
+    }
+    else {
+      str = str + "]"
+    }
+    i++;
+  }
+  console.log(str);
+}
+
+printMoves(knightMoves([0,0],[2,0]));
+
