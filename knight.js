@@ -76,18 +76,28 @@ function knightMoves(start, end) {
   let currentPath = []
   startNode.path = [startNode];
   let queue = [];
+  let nodesWithAddedPaths = [];
   queue.push(startNode);
   let ifFound = false;
   while(!ifFound) {
     let currentNode = queue.shift();
+    console.log(`currentnode: [${currentNode.coordinates[0]},${currentNode.coordinates[1]}]`)
     currentPath = currentNode.path;
+    console.log("currentpath:")
+    for(let path of currentPath) {
+      console.log(`[${path.coordinates[0]},${path.coordinates[1]}]`);
+    }
+
     // currentPath.push(currentNode);
     for(let nodeCoordinates of currentNode.adjacentMoves) {
       let node = gameBoard[nodeCoordinates[0]][nodeCoordinates[1]];
-      for(let pathNode of currentPath) {
-        node.path.push(pathNode);
+      if(!doesArrayContainNode(nodesWithAddedPaths, node)) {
+        for(let pathNode of currentPath) {
+          node.path.push(pathNode);
+        }
+        node.path.push(node);
+        nodesWithAddedPaths.push(node);
       }
-      node.path.push(node);
       if(node.coordinates[0] != end[0] ||
         node.coordinates[1] != end[1]
       ) {
@@ -120,5 +130,5 @@ function printMoves(array) {
   console.log(str);
 }
 
-printMoves(knightMoves([0,0],[2,0]));
+printMoves(knightMoves([0,0],[7,7]));
 
